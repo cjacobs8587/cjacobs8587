@@ -1,0 +1,148 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package wordlehelper;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.util.ArrayList;
+import java.util.Scanner;
+
+public class WordleHelper {
+
+
+    public static void main(String[] args) {
+        Scanner scnr = new Scanner(System.in);
+        File file = new File("C:\\Users\\baseb\\OneDrive\\Documents\\NetBeansProjects\\WordleHelper\\src\\wordlehelper\\fiveleterwords.txt");
+        ArrayList<String> words = new ArrayList<>();
+        ArrayList<String> goodLetters = new ArrayList<>();
+        ArrayList<String> badLetters = new ArrayList<>();
+        String[] correctWord = {" "," "," "," "," "};
+        boolean done = false;
+        readFile(file, words);
+        sort(words);
+        System.out.println(words);
+        do{
+            System.out.println("Please enter new good letters");
+            String goodLettersString = scnr.nextLine();
+            populateGoodLetters(goodLettersString,goodLetters);
+            System.out.println(goodLetters);
+            System.out.println("Please enter new bad letters");
+            String badLettersString = scnr.nextLine();
+            populateBadLetters(badLettersString,badLetters);
+            System.out.println(badLetters);
+            
+            printCorrectLetters(correctWord,scnr);
+            toString(correctWord);
+            find(goodLetters,badLetters,correctWord,words);
+            
+            
+       }while(done == false);
+         
+       
+        
+    }
+    public static void readFile(File file, ArrayList words){ 
+        try{
+        Scanner read = new Scanner(file);
+		while(read.hasNextLine()) {
+		   words.add(read.next());
+	        }
+		read.close();
+	}
+	catch(FileNotFoundException e){
+            System.out.println("File not found");
+		System.exit(0);
+	}
+    }
+    
+    public static void populateGoodLetters(String goodLettersString,ArrayList goodLetters){
+        for(int i = 0; i < goodLettersString.length(); i++){
+            goodLetters.add(goodLettersString.charAt(i)+"");
+        }
+    }
+    public static void populateBadLetters(String badLettersString,ArrayList badLetters){
+        for(int i = 0; i < badLettersString.length(); i++){
+            badLetters.add(badLettersString.charAt(i)+"");
+        }
+    }
+    public static void printCorrectLetters(String[] correctWord, Scanner scnr){
+        for(int i = 0; i < correctWord.length; i++){
+            if(correctWord[i].equals(" ")){
+                System.out.println("Enter the correct letter in this postion(if not found put a space)");
+                correctWord[i] = scnr.nextLine();
+            }
+           
+        }
+    }
+    
+   
+   public static void toString(String[] correctWord){
+       System.out.println("[" +correctWord[0] +"]" +"[" +correctWord[1] +"]" + "[" +correctWord[2] +"]" + "[" +correctWord[3] +"]" + "[" +correctWord[4] +"]" );   
+   }
+   public static void sort(ArrayList words){
+       int i,j;
+  String key;
+   
+       for (j = 1; j < words.size(); j++) { //the condition has changed
+    key = (String)words.get(j);
+    i = j - 1;
+    while (i >= 0) {
+      if (key.compareTo((String)words.get(i)) > 0) {//here too
+        break;
+      }
+      words.set(i+1, words.get(i));
+      i--;
+    }
+    words.set(i + 1,key);
+   }
+   }
+    public static void find(ArrayList<String> goodLetters, ArrayList<String> badLetters, String[] correctWord, ArrayList<String> words) {
+        int entry = 0;
+        int reset = 0;
+        /*do{
+        reset = 0;
+        for(int i = 0; i < badLetters.size();i++){
+            for(int j = 0; j < words.size();j++){
+                if(words.get(j).contains(badLetters.get(i))){
+                        entry = words.indexOf(j);
+                        words.remove(entry);
+                        reset +=1;
+                }
+
+            }
+        }
+        }while(reset != 0);
+        */
+        /*do{
+        reset = 0;
+        for(int i = 0; i < goodLetters.size();i++){
+            for(int j = 0; j < words.size();j++){
+                if(!words.get(j).contains(goodLetters.get(i))){
+                        entry = words.indexOf(entry);
+                        words.remove(j);
+                        reset +=1;
+                }
+            }
+        }
+        }while(reset != 0);
+*/
+        do{
+        reset = 0;
+        for(int i = 0; i < correctWord.length;i++){
+            for(int j = 0; j < words.size();j++){
+                String postion = words.get(j).charAt(i) +"";
+                if(!postion.equals(correctWord[i])){
+                        entry = words.indexOf(j);
+                        System.out.println("Word being removed " + words.get(j));
+                        words.remove(entry);
+                        reset +=1;
+                }
+            }
+        }
+       }while(reset != 0);
+        System.out.println(words);
+    }
+}
